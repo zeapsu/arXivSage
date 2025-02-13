@@ -31,7 +31,7 @@ ArXivSage is a desktop application that allows users to search for research pape
 ### Setup
 #### Backend (Django)
 ```sh
-cd arxivsage-backend
+cd arxivsage
 pipenv install
 pipenv shell
 python manage.py runserver
