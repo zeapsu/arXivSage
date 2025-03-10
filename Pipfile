@@ -9,7 +9,10 @@ django-cors-headers = "*"
 djangorestframework = "*"
 markdown = "*"
 django-filter = "*"
+python-environ = "*"
 arxiv = "*"
+openai = "*"
+dotenv = "*"
 
 [dev-packages]
 
