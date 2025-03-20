@@ -11,7 +11,7 @@
 
 - [x] **Implement arXiv API integration**
   - Query arXiv for top/latest papers based on keyword input
-- [ ] **PDF download \& text extraction**
+- [x] **PDF download \& text extraction**
   - Download PDFs from arXiv URLs
   - Extract text from PDFs (e.g., using `pdfplumber` or `PyMuPDF`)
 - [ ] **Integrate DeepSeek API for summarization**
