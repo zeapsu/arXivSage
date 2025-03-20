@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import ThemeController from "./components/theme-controller";
 
 declare global {
   interface Window {
@@ -60,15 +61,8 @@ function App() {
         ) : (
           <p className="text-gray-500 mt-4">No results yet.</p>
         )}
-      </div>
-      {/* Dropdown (placeholder) */}
-      <div className="dropdown">
-        <div tabIndex={0} role="button" className="btn m-1">Dropdown</div>
-        <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
-        <li><a>Item 1</a></li>
-        <li><a>Item 2</a></li>
-        </ul>
-      </div>
+    </div>
+      <ThemeController />
     </div>
   );
 }
