@@ -9,7 +9,7 @@
 
 ## Backend (FastAPI)
 
-- [ ] **Implement arXiv API integration**
+- [x] **Implement arXiv API integration**
   - Query arXiv for top/latest papers based on keyword input
 - [ ] **PDF download \& text extraction**
   - Download PDFs from arXiv URLs
