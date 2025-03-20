@@ -1,9 +1,9 @@
 ## Project Setup
 
-- [$\checkmark$] **Initialize FastAPI backend**
+- [x] **Initialize FastAPI backend**
   - Set up Python environment (`venv`) and install FastAPI, Uvicorn[^1]
   - Create basic "Hello World" API endpoint[^1]
-- [$\checkmark$] **Setup Next.js + Electron frontend**
+- [x] **Setup Next.js + Electron frontend**
   - Initialize Next.js project and Electron integration
   - Configure Tailwind CSS and chosen component library
 
