@@ -1,9 +1,3 @@
-<img src="https://r2cdn.perplexity.ai/pplx-full-logo-primary-dark%402x.png" class="logo" width="120"/>
-
-# 
-
----
-
 # arXiv Sage: AI-Powered Research Summarizer
 
 arXiv Sage is a desktop application that transforms complex research papers into engaging, Instagram-style summaries. Simply enter a keyword, and the app fetches the latest papers from arXiv, summarizes them using DeepSeek AI, and presents them in a beautiful feed interface.
@@ -15,7 +9,6 @@ arXiv Sage is a desktop application that transforms complex research papers into
 - **Instagram-Style Feed**: Browse summaries in a familiar, visually appealing format
 - **Desktop Application**: Convenient Electron-based app for Windows, Mac, and Linux
 
-
 ## Tech Stack
 
 ### Frontend
@@ -25,14 +18,12 @@ arXiv Sage is a desktop application that transforms complex research papers into
 - **Tailwind CSS**: Utility-first CSS framework for styling
 - **React Component Library**: UI components for consistent design
 
-
 ### Backend
 
 - **FastAPI**: High-performance Python web framework
 - **arXiv API**: Integration for fetching research papers
 - **PDF Processing**: Extraction of text from research PDFs
 - **DeepSeek API**: AI-powered text summarization
-
 
 ## Getting Started
 
@@ -41,7 +32,6 @@ arXiv Sage is a desktop application that transforms complex research papers into
 - Node.js (v14+)
 - Python (v3.8+)
 - npm or yarn
-
 
 ### Backend Setup
 
@@ -71,7 +61,6 @@ DEEPSEEK_API_KEY=your_deepseek_api_key
 uvicorn main:app --reload
 ```
 
-
 ### Frontend Setup
 
 1. Install frontend dependencies:
@@ -97,7 +86,6 @@ npm run electron-dev
 # or
 yarn electron-dev
 ```
-
 
 ## Building for Production
 
@@ -135,14 +123,12 @@ arXiv-sage/
 └── README.md              # Project documentation
 ```
 
-
 ## Future Extensions
 
 - Local ML model integration for offline summarization
 - Custom summarization styles (academic, ELI5, etc.)
 - Citation extraction and management
 - Collaborative features for research teams
-
 
 ## Contributing
 
@@ -151,4 +137,3 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
-
