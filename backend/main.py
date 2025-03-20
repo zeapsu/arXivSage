@@ -1,6 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from services.arxiv import ArxivService
+from services.pdf import PDFService
 
 app = FastAPI(title="arXiv Sage API")
 
@@ -44,6 +45,23 @@ def get_paper(paper_id: str):
         return paper
     except Exception as e:
         raise HTTPException(status_code=404, detail=f"Paper not found: {str(e)}")
+
+
+@app.get("/api/paper/{paper_id}/extract")
+def download_and_extract(paper_id: str):
+    """
+    Downloads a paper's PDF from arXiv and extracts its text.
+    """
+    try:
+        # Download PDF
+        pdf_path = arxiv_service.download_pdf(paper_id)
+
+        # Extract text
+        extracted_text = PDFService.extract_text(pdf_path)
+
+        return {"paper_id": paper_id, "text": extracted_text, "pdf_path": pdf_path}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error processing paper: {str(e)}")
 
 
 @app.get("/")

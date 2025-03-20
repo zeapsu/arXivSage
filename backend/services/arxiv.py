@@ -1,3 +1,4 @@
+import os
 from typing import Any, Dict, List
 
 import arxiv
@@ -73,3 +74,28 @@ class ArxivService:
             "entry_id": paper.entry_id,
             "doi": paper.doi,
         }
+
+    def download_pdf(self, paper_id: str, dirpath: str = "./pdfs") -> str:
+        """
+        Downloads the PDF of a paper given its arXiv ID.
+
+        Args:
+            paper_id: The arXiv ID of the paper.
+            dirpath: Directory where the PDF will be saved.
+
+        Returns:
+            The file path of the downloaded PDF.
+        """
+        if not os.path.exists(dirpath):
+            os.makedirs(dirpath)
+
+        search = arxiv.Search(id_list=[paper_id])
+        paper = next(self.client.results(search))
+
+        filename = f"{paper_id.replace('/', '_')}.pdf"
+        filepath = os.path.join(dirpath, filename)
+
+        # Download the PDF
+        paper.download_pdf(dirpath=dirpath, filename=filename)
+
+        return filepath
