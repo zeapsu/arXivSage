@@ -51,7 +51,7 @@
 
 - [ ] **Write tests for FastAPI endpoints**
   - Unit tests for API logic (arXiv fetching, PDF extraction, summarization)
-- [ ] **Write clear documentation**
+- [x] **Write clear documentation**
   - README with setup instructions, environment variables, and usage examples
 
 <div style="text-align: center">⁂</div>
