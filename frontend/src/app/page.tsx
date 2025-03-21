@@ -35,9 +35,13 @@ export default function Home() {
           />
         </div>
         {isLoading && (
-          <div className="mt-8">
-            <LoadingSpinner />
-          </div>
+          <LoadingSpinner
+            message={
+              results.length > 0
+                ? "Updating results..."
+                : "Searching and summarizing papers..."
+            }
+          />
         )}
       </div>
     );

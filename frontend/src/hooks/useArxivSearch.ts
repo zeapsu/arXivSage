@@ -1,12 +1,12 @@
 import { useState } from "react";
 import axios from "axios";
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+
 export function useArxivSearch() {
   const [results, setResults] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  const endpoint = "http://localhost:8000/api/keyword/summarize";
 
   const searchPapers = async (
     keyword: string,
@@ -19,17 +19,43 @@ export function useArxivSearch() {
     setError(null);
 
     try {
-      const response = await axios.post(endpoint, {
-        keyword,
-        max_results: maxResults,
-        max_length: maxLength,
-      });
+      const response = await axios.post(
+        `${API_BASE_URL}/api/keyword/summarize`,
+        {
+          keyword,
+          max_results: maxResults,
+          max_length: maxLength,
+        },
+      );
 
       setResults(response.data.posts);
       return response.data.posts;
     } catch (err) {
       console.error("Error searching papers:", err);
-      setError("Failed to fetch papers. Please try again.");
+
+      // More specific error messages based on error type
+      if (axios.isAxiosError(err)) {
+        if (err.response?.status === 404) {
+          setError(
+            "The API endpoint could not be found. Is the backend server running?",
+          );
+        } else if (err.response?.status === 500) {
+          setError("The server encountered an error. Please try again later.");
+        } else if (err.code === "ECONNABORTED") {
+          setError("Request timed out. The server might be overloaded.");
+        } else if (!err.response) {
+          setError(
+            "Cannot connect to the server. Please check your internet connection.",
+          );
+        } else {
+          setError(
+            `Error: ${err.response.data.detail || "Unknown error occurred"}`,
+          );
+        }
+      } else {
+        setError("An unexpected error occurred. Please try again.");
+      }
+
       return [];
     } finally {
       setIsLoading(false);
