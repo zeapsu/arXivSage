@@ -23,7 +23,7 @@
 
 ## Frontend (Next.js + React)
 
-- [ ] **Create keyword input/search component**
+- [x] **Create keyword input/search component**
   - Handle user input and send requests to FastAPI backend using fetch/Axios[^1]
 - [ ] **Implement React "Post" component**
   - Display summarized content clearly and attractively
