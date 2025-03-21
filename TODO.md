@@ -14,10 +14,10 @@
 - [x] **PDF download \& text extraction**
   - Download PDFs from arXiv URLs
   - Extract text from PDFs (e.g., using `pdfplumber` or `PyMuPDF`)
-- [ ] **Integrate DeepSeek API for summarization**
+- [x] **Integrate DeepSeek API for summarization**
   - Send extracted text to DeepSeek API
   - Format summaries into short, engaging Instagram-style posts
-- [ ] **Create REST endpoints**
+- [x] **Create REST endpoints**
   - Endpoint accepting keyword, returning summarized posts as JSON
   - Ensure clear data validation with Pydantic models[^2]
 
