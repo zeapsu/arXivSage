@@ -1,7 +1,13 @@
-from fastapi import FastAPI, HTTPException
+import os
+
+from dotenv import load_dotenv
+from fastapi import Depends, FastAPI, HTTPException
 from pydantic import BaseModel
 from services.arxiv import ArxivService
 from services.pdf import PDFService
+from services.summarizer import DeepSeekService
+
+load_dotenv()
 
 app = FastAPI(title="arXiv Sage API")
 
@@ -9,9 +15,23 @@ app = FastAPI(title="arXiv Sage API")
 arxiv_service = ArxivService()
 
 
+# Dependency to get DeepSeek service
+def get_deepseek_service():
+    api_key = os.getenv("DEEPSEEK_API_KEY")
+    if not api_key:
+        raise HTTPException(status_code=500, detail="DeepSeek API key not configured")
+
+    return DeepSeekService(api_key=api_key)
+
+
 class SearchRequest(BaseModel):
     keyword: str
     max_results: int = 10
+
+
+class SummarizeRequest(BaseModel):
+    paper_id: str
+    max_length: int = 500
 
 
 @app.post("/api/search")
@@ -33,6 +53,45 @@ def search_papers(request: SearchRequest):
         return {"papers": results}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error searching arXiv: {str(e)}")
+
+
+@app.post("/api/paper/summarize")
+def summarize_paper(
+    request: SummarizeRequest,
+    deepseek_service: DeepSeekService = Depends(get_deepseek_service),
+):
+    """
+    Downloads a paper's PDF from arXiv, extracts its text,
+    and generates an Instagram-style summary.
+    """
+    try:
+        # Download PDF
+        pdf_path = arxiv_service.download_pdf(request.paper_id)
+
+        # Extract text
+        extracted_text = PDFService.extract_text(pdf_path)
+
+        # Summarize text
+        summary = deepseek_service.summarize_text(
+            text=extracted_text, max_length=request.max_length
+        )
+
+        if summary is None:
+            # Handle the None case
+            raise HTTPException(status_code=500, detail="Failed to generate summary")
+
+        # Get paper metadata
+        paper_metadata = arxiv_service.get_paper_by_id(request.paper_id)
+
+        return {
+            "paper_id": request.paper_id,
+            "title": paper_metadata["title"],
+            "authors": paper_metadata["authors"],
+            "summary": summary,
+            "published": paper_metadata["published"],
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error processing paper: {str(e)}")
 
 
 @app.get("/api/paper/{paper_id}")
