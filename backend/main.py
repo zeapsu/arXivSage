@@ -2,6 +2,7 @@ import os
 
 from dotenv import load_dotenv
 from fastapi import Depends, FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from services.arxiv import ArxivService
 from services.pdf import PDFService
@@ -10,6 +11,15 @@ from services.summarizer import DeepSeekService
 load_dotenv()
 
 app = FastAPI(title="arXiv Sage API")
+
+# Add CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],  # Your Next.js frontend URL
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # initialize the arXiv service
 arxiv_service = ArxivService()
