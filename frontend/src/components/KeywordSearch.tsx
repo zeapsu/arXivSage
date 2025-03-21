@@ -24,7 +24,7 @@ export default function KeywordSearch({
       // Call the endpoint created in the FastAPI backend
       const response = await axios.post(endpoint, {
         keyword: keyword,
-        max_results: 5, // Adjust as needed
+        max_results: 2, // Adjust as needed
         max_length: 500,
       });
 
