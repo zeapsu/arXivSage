@@ -1,49 +1,99 @@
 "use client";
 
 import { useState } from "react";
-import KeywordSearch from "../components/KeywordSearch";
-import Post from "../components/Post";
+import SearchBar from "@/components/SearchBar";
+import Feed from "@/components/Feed";
+import LoadingSpinner from "@/components/LoadingSpinner";
+import TableOfContents from "@/components/TableOfContents";
+import { useArxivSearch } from "@/hooks/useArxivSearch";
 
 export default function Home() {
-  const [searchResults, setSearchResults] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const { results, isLoading, error, searchPapers } = useArxivSearch();
+  const [hasSearched, setHasSearched] = useState(false);
+  const [activePost, setActivePost] = useState("");
+  const [currentKeyword, setCurrentKeyword] = useState("");
 
-  const handleResultsReceived = (results: any) => {
-    setSearchResults(results);
+  const handleSearch = async (keyword: string) => {
+    await searchPapers(keyword);
+    setHasSearched(true);
+    setCurrentKeyword(keyword);
   };
 
-  return (
-    <main className="flex min-h-screen flex-col items-center p-8 bg-gray-100">
-      <h1 className="text-4xl font-bold mb-8">arXiv Sage</h1>
-      <p className="text-xl mb-8">
-        Enter a keyword to search for research papers
-      </p>
-
-      <KeywordSearch
-        onResultsReceived={handleResultsReceived}
-        isLoading={isLoading}
-        setIsLoading={setIsLoading}
-      />
-
-      {isLoading ? (
-        <div className="mt-8 flex flex-col items-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-          <p className="mt-4 text-gray-600">
-            Searching and summarizing papers...
-          </p>
+  // Initial search page layout
+  if (!hasSearched) {
+    return (
+      <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center">
+        <h1 className="text-4xl font-bold mb-8">arXiv Sage</h1>
+        <p className="text-xl mb-8 text-gray-300">
+          Enter a keyword to search for research papers
+        </p>
+        <div className="w-full max-w-md">
+          <SearchBar
+            onSearch={handleSearch}
+            isLoading={isLoading}
+            minimal={false}
+          />
         </div>
-      ) : (
-        searchResults.length > 0 && (
-          <div className="mt-8 w-full max-w-2xl">
-            <h2 className="text-2xl font-semibold mb-4">Research Summaries</h2>
-            <div className="space-y-6">
-              {searchResults.map((result: any) => (
-                <Post key={result.paper_id} paper={result} />
-              ))}
-            </div>
+        {isLoading && (
+          <div className="mt-8">
+            <LoadingSpinner />
           </div>
-        )
-      )}
-    </main>
+        )}
+      </div>
+    );
+  }
+
+  // Results page layout with fixed header
+  return (
+    <div className="min-h-screen bg-black text-white">
+      {/* Fixed header that appears after search */}
+      <header className="fixed top-0 left-0 right-0 z-10 bg-black h-16 flex items-center px-4 shadow-md">
+        <div className="flex items-center justify-between w-full max-w-7xl mx-auto">
+          <button
+            onClick={() => setHasSearched(false)}
+            className="text-2xl font-bold text-white hover:text-blue-400 transition-colors"
+          >
+            arXiv Sage
+          </button>
+          <div className="w-64">
+            <SearchBar
+              onSearch={handleSearch}
+              isLoading={isLoading}
+              minimal={true}
+            />
+          </div>
+        </div>
+      </header>
+
+      {/* Main content with padding for fixed header */}
+      <main className="pt-24 px-8 pb-8 flex">
+        {/* Feed content */}
+        <div className="w-full max-w-3xl mx-auto">
+          {isLoading ? (
+            <div className="flex justify-center items-center h-64 w-full">
+              <LoadingSpinner />
+            </div>
+          ) : error ? (
+            <p className="text-red-400 text-center mt-8">{error}</p>
+          ) : results.length > 0 ? (
+            <>
+              <h2 className="text-2xl font-semibold mb-4 text-white">
+                Research Summaries: {currentKeyword}
+              </h2>
+              <Feed papers={results} setActivePost={setActivePost} />
+            </>
+          ) : (
+            <p className="text-center text-gray-400 mt-8">No results found</p>
+          )}
+        </div>
+
+        {/* Table of Contents */}
+        {results.length > 0 && (
+          <div className="hidden lg:block w-64 fixed right-8 top-24">
+            <TableOfContents papers={results} activePost={activePost} />
+          </div>
+        )}
+      </main>
+    </div>
   );
 }
