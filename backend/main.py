@@ -34,6 +34,12 @@ class SummarizeRequest(BaseModel):
     max_length: int = 500
 
 
+class KeywordSummaryRequest(BaseModel):
+    keyword: str
+    max_results: int = 5
+    max_length: int = 500
+
+
 @app.post("/api/search")
 def search_papers(request: SearchRequest):
     """
@@ -92,6 +98,69 @@ def summarize_paper(
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error processing paper: {str(e)}")
+
+
+@app.post("/api/keyword/summarize")
+def summarize_by_keyword(
+    request: KeywordSummaryRequest,
+    deepseek_service: DeepSeekService = Depends(get_deepseek_service),
+):
+    """
+    Searches for papers based on keyword, downloads PDFs, and returns summarized posts.
+
+    This endpoint combines search, download, extraction, and summarization in one call.
+    """
+    if not request.keyword:
+        raise HTTPException(status_code=400, detail="Keyword is required")
+
+    try:
+        # Search for papers
+        papers = arxiv_service.search_papers(request.keyword, request.max_results)
+        # Process each paper
+        summarized_posts = []
+
+        for paper in papers:
+            paper_id = paper["entry_id"].split("/")[-1]  # Extract arXiv ID
+
+            try:
+                # Download PDF
+                pdf_path = arxiv_service.download_pdf(paper_id)
+
+                # Extract text
+                extracted_text = PDFService.extract_text(pdf_path)
+
+                # Summarize text
+                summary = deepseek_service.summarize_text(
+                    text=extracted_text, max_length=request.max_length
+                )
+
+                if summary is None:
+                    # Skip papers that fail to summarize
+                    continue
+
+                # Add to results
+                summarized_posts.append(
+                    {
+                        "paper_id": paper_id,
+                        "title": paper["title"],
+                        "authors": paper["authors"],
+                        "summary": summary,
+                        "published": paper["published"],
+                        "pdf_url": paper["pdf_url"],
+                    }
+                )
+
+            except Exception as e:
+                # Log the error but continue processing other papers
+                print(f"Error processing paper {paper_id}: {str(e)}")
+                continue
+
+        return {"posts": summarized_posts}
+
+    except Exception as e:
+        raise HTTPException(
+            status_code=500, detail=f"Error processing keyword search: {str(e)}"
+        )
 
 
 @app.get("/api/paper/{paper_id}")
