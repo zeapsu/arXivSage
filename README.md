@@ -7,14 +7,14 @@ arXiv Sage is a desktop application that transforms complex research papers into
 - **Research Made Accessible**: Search arXiv's vast repository with simple keywords
 - **AI-Powered Summaries**: Automatically transform dense research papers into concise, engaging summaries
 - **Instagram-Style Feed**: Browse summaries in a familiar, visually appealing format
-- **Desktop Application**: Convenient Electron-based app for Windows, Mac, and Linux
+- **Desktop Application**: Convenient, secure, and lightweight Tauri-based app for Windows, Mac, and Linux
 
 ## Tech Stack
 
 ### Frontend
 
 - **Next.js**: React framework for building the user interface
-- **Electron**: Wraps the web app into a desktop application
+- **Tauri**: Wraps the web app into a lightweight desktop application
 - **Tailwind CSS**: Utility-first CSS framework for styling
 - **React Component Library**: UI components for consistent design
 
@@ -30,6 +30,7 @@ arXiv Sage is a desktop application that transforms complex research papers into
 ### Prerequisites
 
 - Node.js (v14+)
+- Rust (latest stable version)
 - Python (v3.8+)
 - npm or yarn
 
@@ -45,7 +46,7 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 2. Install backend dependencies:
 
 ```bash
-pip install fastapi uvicorn pydantic requests pymupdf
+pip install -r requirements.txt
 ```
 
 3. Set up environment variables:
@@ -79,24 +80,24 @@ npm run dev
 yarn dev
 ```
 
-3. For Electron development:
+3. For Tauri development:
 
 ```bash
-npm run electron-dev
+npm run tauri dev
 # or
-yarn electron-dev
+yarn tauri dev
 ```
 
 ## Building for Production
 
-### Package the Electron App
+### Package the Tauri App
 
 ```bash
 npm run build
-npm run electron-pack
+npm run tauri build
 # or
 yarn build
-yarn electron-pack
+yarn tauri build
 ```
 
 This will create distributable packages in the `dist` folder for your platform.
@@ -106,19 +107,30 @@ This will create distributable packages in the `dist` folder for your platform.
 ```
 arXiv-sage/
 ├── backend/               # FastAPI backend
-│   ├── main.py            # Main FastAPI application
-│   ├── models.py          # Pydantic models
+│   ├── pdfs/              # arXiv PDFs storage
 │   ├── services/          # Business logic
 │   │   ├── arxiv.py       # arXiv API integration
 │   │   ├── pdf.py         # PDF processing
 │   │   └── summarizer.py  # DeepSeek API integration
+│   ├── binary_main.py     # pyinstaller binary for Tauri
+│   ├── main.py            # Main FastAPI application
 │   └── requirements.txt   # Python dependencies
 ├── frontend/              # Next.js + Electron frontend
-│   ├── components/        # React components
-│   ├── pages/             # Next.js pages
 │   ├── public/            # Static assets
-│   ├── styles/            # Tailwind and CSS styles
-│   ├── electron/          # Electron configuration
+|   ├── src/
+│   |   ├── app/           # Next.js app configuration
+│   |   ├── components/    # Next.js components
+│   |   ├── hooks/         # Next.js hooks
+│   ├── src-tauri/         # Tauri configuration
+│   |   ├── binaries/      # FastAPI sidecar binary
+│   |   ├── capabilities/  # Permissions for sidecar
+│   |   ├── gen/           # Schema for Tauri API
+│   |   ├── icons/         # Default tauri icons
+│   |   ├── pdfs/          # Pdf storage
+│   |   ├── src/           # Tauri app entry point
+│   |   ├── Cargo.toml     # Tauri dependencies
+│   |   ├── build.rs       # Tauri build script
+│   |   ├── tauri.conf.json# Tauri configuration
 │   └── package.json       # Node.js dependencies
 └── README.md              # Project documentation
 ```
