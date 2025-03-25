@@ -10,8 +10,8 @@ export function useArxivSearch() {
 
   const searchPapers = async (
     keyword: string,
-    maxResults = 2,
-    maxLength = 250,
+    maxResults = 5,
+    maxLength = 500,
   ) => {
     if (!keyword.trim()) return;
 
