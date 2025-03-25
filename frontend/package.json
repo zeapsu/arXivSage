@@ -2,13 +2,14 @@
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
+  "main": "electron/main.js",
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "electron-dev": "concurrently \"npm run dev\" \"wait-on http://localhost:3000 && electron electron/main.js\"",
-    "electron-pack": "next build && next export && electron-builder"
+    "electron-pack": "next build && electron-builder"
   },
   "dependencies": {
     "electron-is-dev": "^3.0.1",

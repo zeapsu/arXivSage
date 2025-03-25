@@ -1,5 +1,5 @@
 import React from "react";
-import ReactMarkdown from "react-markdown";
+import ReactMarkdown, { Components } from "react-markdown";
 import remarkGfm from "remark-gfm";
 
 interface PostProps {
@@ -12,6 +12,14 @@ interface PostProps {
     pdf_url?: string;
   };
 }
+
+// Define a separate CodeComponent type
+type CodeProps = {
+  node?: any;
+  inline?: boolean;
+  className?: string;
+  children?: React.ReactNode;
+};
 
 export default function Post({ paper }: PostProps) {
   return (
@@ -69,18 +77,23 @@ export default function Post({ paper }: PostProps) {
             a: ({ node, ...props }) => (
               <a className="text-blue-400 hover:underline" {...props} />
             ),
-            code: ({ node, inline, ...props }) =>
-              inline ? (
+            code: ({ inline, className, children, ...props }: CodeProps) => {
+              return inline ? (
                 <code
                   className="bg-gray-800 rounded px-1 py-0.5 text-gray-300"
                   {...props}
-                />
+                >
+                  {children}
+                </code>
               ) : (
                 <code
                   className="block bg-gray-800 rounded p-2 mb-4 text-gray-300"
                   {...props}
-                />
-              ),
+                >
+                  {children}
+                </code>
+              );
+            },
           }}
         >
           {paper.summary}
