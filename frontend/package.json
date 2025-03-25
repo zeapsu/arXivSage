@@ -2,17 +2,13 @@
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
-  "main": "electron/main.js",
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "electron-dev": "concurrently \"npm run dev\" \"wait-on http://localhost:3000 && electron electron/main.js\"",
-    "electron-pack": "next build && electron-builder"
+    "lint": "next lint"
   },
   "dependencies": {
-    "electron-is-dev": "^3.0.1",
     "next": "15.2.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
@@ -27,17 +23,13 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "axios": "^1.8.4",
-    "concurrently": "^9.1.2",
-    "electron": "^35.0.3",
-    "electron-builder": "^25.1.8",
     "eslint": "^9",
     "eslint-config-next": "15.2.3",
     "eslint-plugin-react-hooks": "^5.2.0",
     "react-markdown": "^10.1.0",
     "remark-gfm": "^4.0.1",
     "tailwindcss": "^4",
-    "typescript": "^5",
-    "wait-on": "^8.0.3"
+    "typescript": "^5"
   },
   "build": {
     "appId": "com.arxivsage.app",
