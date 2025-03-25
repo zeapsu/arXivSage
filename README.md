@@ -64,7 +64,7 @@ uvicorn main:app --reload
 
 ### Frontend Setup
 
-1. Install frontend dependencies:
+1. Install frontend dependencies (inside frontend directory):
 
 ```bash
 npm install
