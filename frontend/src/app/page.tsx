@@ -1,23 +1,40 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect } from "react";
+import { Command } from "@tauri-apps/plugin-shell";
 import SearchBar from "@/components/SearchBar";
 import Feed from "@/components/Feed";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import TableOfContents from "@/components/TableOfContents";
-import { useArxivSearch } from "@/hooks/useArxivSearch";
+import { useSearch } from "@/hooks/useSearch";
 
 export default function Home() {
-  const { results, isLoading, error, searchPapers } = useArxivSearch();
-  const [hasSearched, setHasSearched] = useState(false);
-  const [activePost, setActivePost] = useState("");
-  const [currentKeyword, setCurrentKeyword] = useState("");
+  useEffect(() => {
+    async function startFastAPIServer() {
+      try {
+        // Use Command.sidecar() to execute the sidecar binary
+        const command = Command.sidecar("binaries/main"); // Path to your FastAPI binary relative to src-tauri
+        const output = await command.spawn(); // Start the sidecar process
+        console.log("FastAPI server started:", output);
+      } catch (error) {
+        console.error("Failed to start FastAPI server:", error);
+      }
+    }
 
-  const handleSearch = async (keyword: string) => {
-    await searchPapers(keyword);
-    setHasSearched(true);
-    setCurrentKeyword(keyword);
-  };
+    startFastAPIServer();
+  }, []);
+
+  const {
+    results,
+    isLoading,
+    error,
+    hasSearched,
+    currentKeyword,
+    activePost,
+    setActivePost,
+    handleSearch,
+    resetSearch,
+  } = useSearch();
 
   // Initial search page layout
   if (!hasSearched) {
@@ -54,7 +71,7 @@ export default function Home() {
       <header className="fixed top-0 left-0 right-0 z-10 bg-black h-16 flex items-center px-4 shadow-md">
         <div className="flex items-center justify-between w-full max-w-7xl mx-auto">
           <button
-            onClick={() => setHasSearched(false)}
+            onClick={resetSearch}
             className="text-2xl font-bold text-white hover:text-blue-400 transition-colors"
           >
             arXiv Sage
